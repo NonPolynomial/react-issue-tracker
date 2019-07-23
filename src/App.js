@@ -1,19 +1,23 @@
 import React from 'react';
+import faker from 'faker';
+
 import './App.css';
+
+import Layout from './components/Layout';
+import ProjectOverview from './components/ProjectOverview';
+
+const projects = Array.from({ length: 7 }, () => ({
+  id: faker.random.uuid(),
+  title: faker.company.companyName(),
+  description: faker.lorem.paragraph(),
+}));
 
 function App() {
   return (
-    <div>
-      <header>
-        <h1>Issue Tracker</h1>
-      </header>
+    <Layout>
       <h2>Projects</h2>
-      <ul>
-        <li>Foo</li>
-        <li>Bar</li>
-        <li>Baz</li>
-      </ul>
-    </div>
+      <ProjectOverview projects={projects} />
+    </Layout>
   );
 }
 
