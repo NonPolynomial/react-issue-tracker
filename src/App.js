@@ -13,20 +13,34 @@ class App extends React.Component {
 
     this.state = {
       projects: [],
+      dataFetched: false,
     };
   }
 
   async componentDidMount() {
-    const projects = await Projects.fetchData();
-    this.setState({ projects });
+    const projects = await Projects.fetchData(500);
+    this.setState({ projects, dataFetched: true });
   }
 
   render() {
-    const { projects } = this.state;
+    const { projects, dataFetched } = this.state;
+
+    if (!dataFetched) {
+      return (
+        <Layout>
+          <p>Fetching data...</p>
+        </Layout>
+      );
+    }
+
     return (
       <Layout>
         <h2>Projects</h2>
-        <ProjectOverview projects={projects} />
+        {projects.length > 0 ? (
+          <ProjectOverview projects={projects} />
+        ) : (
+          <p>No projects found.</p>
+        )}
       </Layout>
     );
   }
