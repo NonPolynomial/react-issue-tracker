@@ -12,13 +12,15 @@ const projects = Array.from({ length: 7 }, () => ({
   description: faker.lorem.paragraph(),
 }));
 
-function App() {
-  return (
-    <Layout>
-      <h2>Projects</h2>
-      <ProjectOverview projects={projects} />
-    </Layout>
-  );
+class App extends React.Component {
+  render() {
+    return (
+      <Layout>
+        <h2>Projects</h2>
+        <ProjectOverview projects={projects} />
+      </Layout>
+    );
+  }
 }
 
 export default App;
