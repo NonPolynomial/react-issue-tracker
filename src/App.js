@@ -1,19 +1,28 @@
 import React from 'react';
-import faker from 'faker';
 
 import './App.css';
+
+import Projects from './services/Projects';
 
 import Layout from './components/Layout';
 import ProjectOverview from './components/ProjectOverview';
 
-const projects = Array.from({ length: 7 }, () => ({
-  id: faker.random.uuid(),
-  title: faker.company.companyName(),
-  description: faker.lorem.paragraph(),
-}));
-
 class App extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      projects: [],
+    };
+  }
+
+  async componentDidMount() {
+    const projects = await Projects.fetchData();
+    this.setState({ projects });
+  }
+
   render() {
+    const { projects } = this.state;
     return (
       <Layout>
         <h2>Projects</h2>

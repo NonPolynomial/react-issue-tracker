@@ -6,7 +6,7 @@ const ProjectOverview = ({ projects }) => (
     {projects.map(project => (
       <article key={project.id} className="project-overview__item">
         <h3>{project.title}</h3>
-        <p>{project.description}</p>
+        <p>{project.summary}</p>
       </article>
     ))}
   </div>
