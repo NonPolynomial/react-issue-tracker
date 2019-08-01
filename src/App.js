@@ -6,6 +6,7 @@ import Projects from './services/Projects';
 
 import Layout from './components/Layout';
 import ProjectOverview from './components/ProjectOverview';
+import ProjectView from './components/ProjectView';
 
 class App extends React.Component {
   constructor(props) {
@@ -14,6 +15,7 @@ class App extends React.Component {
     this.state = {
       projects: [],
       dataFetched: false,
+      selectedProject: null,
     };
   }
 
@@ -23,7 +25,7 @@ class App extends React.Component {
   }
 
   render() {
-    const { projects, dataFetched } = this.state;
+    const { projects, dataFetched, selectedProject } = this.state;
 
     if (!dataFetched) {
       return (
@@ -33,16 +35,27 @@ class App extends React.Component {
       );
     }
 
-    return (
-      <Layout>
-        <h2>Projects</h2>
-        {projects.length > 0 ? (
-          <ProjectOverview projects={projects} />
-        ) : (
-          <p>No projects found.</p>
-        )}
-      </Layout>
-    );
+    let content = <p>No projects found.</p>;
+
+    if (selectedProject) {
+      content = (
+        <ProjectView
+          project={selectedProject}
+          onDeselect={() => this.setState({ selectedProject: null })}
+        />
+      );
+    } else if (projects.length > 0) {
+      content = (
+        <ProjectOverview
+          projects={projects}
+          onProjectSelect={project =>
+            this.setState({ selectedProject: project })
+          }
+        />
+      );
+    }
+
+    return <Layout>{content}</Layout>;
   }
 }
 
