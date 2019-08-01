@@ -23,7 +23,7 @@ class ProjectView extends React.Component {
           task={selectedTask}
           onStatusChange={(task, status) => {
             task.status = status;
-            this.setState({ selectedTask: task });
+            this.forceUpdate();
           }}
           onDeselect={() => this.setState({ selectedTask: null })}
         />
