@@ -1,5 +1,18 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+
 import './ProjectOverview.css';
+
+import { Project } from '../../types';
+
+const propTypes = {
+  projects: PropTypes.arrayOf(Project).isRequired,
+  onProjectSelect: PropTypes.func,
+};
+
+const defaultProps = {
+  onProjectSelect: Function.prototype,
+};
 
 const ProjectOverview = ({ projects, onProjectSelect }) => (
   <div>
@@ -18,5 +31,8 @@ const ProjectOverview = ({ projects, onProjectSelect }) => (
     </div>
   </div>
 );
+
+ProjectOverview.propTypes = propTypes;
+ProjectOverview.defaultProps = defaultProps;
 
 export default ProjectOverview;

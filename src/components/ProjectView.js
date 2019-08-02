@@ -1,7 +1,19 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import TaskOverview from './TaskOverview';
 import TaskView from './TaskView';
+
+import { Project } from '../types';
+
+const propTypes = {
+  project: Project.isRequired,
+  onDeselect: PropTypes.func,
+};
+
+const defaultProps = {
+  onDeselect: Function.prototype,
+};
 
 class ProjectView extends React.Component {
   constructor(props) {
@@ -53,5 +65,8 @@ class ProjectView extends React.Component {
     );
   }
 }
+
+ProjectView.propTypes = propTypes;
+ProjectView.defaultProps = defaultProps;
 
 export default ProjectView;

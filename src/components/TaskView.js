@@ -1,4 +1,17 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+
+import { Task } from '../types';
+
+const propTypes = {
+  task: Task.isRequired,
+  onStatusChange: PropTypes.func,
+  onDeselect: PropTypes.func,
+};
+const defaultProps = {
+  onStatusChange: Function.prototype,
+  onDeselect: Function.prototype,
+};
 
 const TaskView = ({ task, onStatusChange, onDeselect }) => {
   return (
@@ -19,5 +32,8 @@ const TaskView = ({ task, onStatusChange, onDeselect }) => {
     </div>
   );
 };
+
+TaskView.propTypes = propTypes;
+TaskView.defaultProps = defaultProps;
 
 export default TaskView;

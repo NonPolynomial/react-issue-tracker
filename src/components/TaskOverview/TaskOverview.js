@@ -1,5 +1,18 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+
 import './TaskOverview.css';
+
+import { Task } from '../../types';
+
+const propTypes = {
+  tasks: PropTypes.arrayOf(Task).isRequired,
+  onTaskSelect: PropTypes.func,
+};
+
+const defaultProps = {
+  onTaskSelect: Function.prototype,
+};
 
 class TaskOverview extends React.Component {
   constructor(props) {
@@ -90,5 +103,8 @@ class TaskOverview extends React.Component {
     );
   }
 }
+
+TaskOverview.propTypes = propTypes;
+TaskOverview.defaultProps = defaultProps;
 
 export default TaskOverview;
