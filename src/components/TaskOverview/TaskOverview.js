@@ -16,19 +16,40 @@ const defaultProps = {
   onTaskSelect: Function.prototype,
 };
 
-const TaskOverview = ({ tasks, onTaskSelect }) => {
-  const total = tasks.length;
-
+const useCategorizedTasks = tasks => {
   const [todoTasks, setTodoTasks] = useState(tasks);
   const [progressTasks, setProgressTasks] = useState(tasks);
   const [doneTasks, setDoneTasks] = useState(tasks);
 
-  useEffect(() => {
-    console.log('effect');
+  const categorizeTasks = () => {
     setTodoTasks(tasks.filter(({ status }) => status === 'todo'));
     setProgressTasks(tasks.filter(({ status }) => status === 'progress'));
     setDoneTasks(tasks.filter(({ status }) => status === 'done'));
-  });
+  };
+
+  useEffect(() => {
+    setTodoTasks(tasks.filter(({ status }) => status === 'todo'));
+    setProgressTasks(tasks.filter(({ status }) => status === 'progress'));
+    setDoneTasks(tasks.filter(({ status }) => status === 'done'));
+  }, [tasks]);
+
+  return {
+    todoTasks,
+    progressTasks,
+    doneTasks,
+    categorizeTasks,
+  };
+};
+
+const TaskOverview = ({ tasks, onTaskSelect }) => {
+  const total = tasks.length;
+
+  const {
+    todoTasks,
+    progressTasks,
+    doneTasks,
+    categorizeTasks,
+  } = useCategorizedTasks(tasks);
 
   return (
     <div className="task-overview__container">
@@ -43,6 +64,7 @@ const TaskOverview = ({ tasks, onTaskSelect }) => {
               <button
                 onClick={() => {
                   task.status = 'progress';
+                  categorizeTasks();
                 }}
               >
                 ▶
@@ -50,6 +72,7 @@ const TaskOverview = ({ tasks, onTaskSelect }) => {
               <button
                 onClick={() => {
                   task.status = 'done';
+                  categorizeTasks();
                 }}
               >
                 ✔
@@ -70,6 +93,7 @@ const TaskOverview = ({ tasks, onTaskSelect }) => {
               <button
                 onClick={() => {
                   task.status = 'todo';
+                  categorizeTasks();
                 }}
               >
                 ◀
@@ -77,6 +101,7 @@ const TaskOverview = ({ tasks, onTaskSelect }) => {
               <button
                 onClick={() => {
                   task.status = 'done';
+                  categorizeTasks();
                 }}
               >
                 ✔
@@ -96,6 +121,7 @@ const TaskOverview = ({ tasks, onTaskSelect }) => {
               <button
                 onClick={() => {
                   task.status = 'progress';
+                  categorizeTasks();
                 }}
               >
                 ◀
