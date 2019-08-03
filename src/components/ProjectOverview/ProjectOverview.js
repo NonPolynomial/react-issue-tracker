@@ -1,9 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import './ProjectOverview.css';
-
 import { Project } from '../../types';
+
+import './ProjectOverview.css';
 
 const propTypes = {
   projects: PropTypes.arrayOf(Project).isRequired,
