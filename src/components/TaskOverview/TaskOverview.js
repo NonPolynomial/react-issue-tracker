@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-
-import { selectTask } from '../../store/actions';
+import { Link } from 'react-router-dom';
 
 import { Task } from '../../types';
 
@@ -140,11 +139,4 @@ const TaskOverview = ({ tasks, onTaskSelect }) => {
 TaskOverview.propTypes = propTypes;
 TaskOverview.defaultProps = defaultProps;
 
-const mapDispatchToProps = dispatch => ({
-  onTaskSelect: task => dispatch(selectTask(task)),
-});
-
-export default connect(
-  null,
-  mapDispatchToProps
-)(TaskOverview);
+export default TaskOverview;

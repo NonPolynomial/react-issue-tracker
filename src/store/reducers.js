@@ -5,20 +5,14 @@ import {
   FETCH_TASKS,
   ADD_PROJECT,
   ADD_TASK,
-  SELECT_PROJECT,
-  SELECT_TASK,
-  CHANGE_VIEW,
-  views,
+  UPDATE_FETCH_STATUS,
+  fetchStatus,
 } from './actions';
 
 const initialState = {
   projects: [],
   tasks: [],
-  selection: {
-    project: null,
-    task: null,
-  },
-  view: views.fetching,
+  fetchingStatus: fetchStatus.UNSENT,
 };
 
 const projectsReducer = (state = initialState.projects, action) => {
@@ -43,36 +37,10 @@ const tasksReducer = (state = initialState.tasks, action) => {
   }
 };
 
-const selectionReducer = (state = initialState.selection, action) => {
+const fetchStatusReducer = (state = initialState.fetchingStatus, action) => {
   switch (action.type) {
-    case SELECT_PROJECT:
-      return {
-        ...state,
-        project: action.project,
-      };
-    case SELECT_TASK:
-      return {
-        ...state,
-        task: action.task,
-      };
-    default:
-      return state;
-  }
-};
-
-const viewReducer = (state = initialState.view, action) => {
-  switch (action.type) {
-    case CHANGE_VIEW:
-      return action.view;
-    case FETCH_PROJECTS:
-    case ADD_PROJECT:
-      return views.projectOverview;
-    case SELECT_PROJECT:
-      return action.project ? views.projectsView : views.projectOverview;
-    case SELECT_TASK:
-      return action.task ? views.taskView : views.taskOverview;
-    case ADD_TASK:
-      return views.taskOverview;
+    case UPDATE_FETCH_STATUS:
+      return action.status;
     default:
       return state;
   }
@@ -81,6 +49,5 @@ const viewReducer = (state = initialState.view, action) => {
 export default combineReducers({
   projects: projectsReducer,
   tasks: tasksReducer,
-  selection: selectionReducer,
-  view: viewReducer,
+  fetchingStatus: fetchStatusReducer,
 });

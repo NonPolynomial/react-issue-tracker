@@ -2,18 +2,12 @@ export const FETCH_PROJECTS = 'FETCH_PROJECTS';
 export const FETCH_TASKS = 'FETCH_TASKS';
 export const ADD_PROJECT = 'ADD_PROJECT';
 export const ADD_TASK = 'ADD_TASK';
-export const SELECT_PROJECT = 'SELECT_PROJECT';
-export const SELECT_TASK = 'SELECT_TASK';
-export const CHANGE_VIEW = 'CHANGE_VIEW';
+export const UPDATE_FETCH_STATUS = 'UPDATE_FETCH_STATUS';
 
-export const views = {
-  projectOverview: 'projectOverview',
-  projectsView: 'projectsView',
-  addProject: 'addProject',
-  taskOverview: 'taskOverview',
-  taskView: 'taskView',
-  addTask: 'addTask',
-  fetching: 'fetching',
+export const fetchStatus = {
+  UNSENT: 'UNSENT',
+  FETCHING: 'FETCHING',
+  DONE: 'DONE',
 };
 
 export const fetchProjects = projects => ({
@@ -36,17 +30,7 @@ export const addTask = task => ({
   type: ADD_TASK,
 });
 
-export const selectProject = project => ({
-  project,
-  type: SELECT_PROJECT,
-});
-
-export const selectTask = task => ({
-  task,
-  type: SELECT_TASK,
-});
-
-export const changeView = view => ({
-  view,
-  type: CHANGE_VIEW,
+export const updateFetchStatus = status => ({
+  status,
+  type: UPDATE_FETCH_STATUS,
 });

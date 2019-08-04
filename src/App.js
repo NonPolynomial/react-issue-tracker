@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { Route, Switch } from 'react-router-dom';
 
 import Projects from './services/Projects';
 
@@ -12,46 +13,39 @@ import FormTaskAdd from './components/FormTaskAdd';
 import TaskOverview from './components/TaskOverview';
 import TaskView from './components/TaskView';
 
-import { fetchProjects, fetchTasks, views } from './store/actions';
-
-import { Project, Task } from './types';
+import {
+  fetchProjects,
+  fetchTasks,
+  updateFetchStatus,
+  fetchStatus,
+} from './store/actions';
 
 import './App.css';
 
 const propTypes = {
-  projects: PropTypes.arrayOf(Project).isRequired,
-  tasks: PropTypes.arrayOf(Task).isRequired,
-  view: PropTypes.oneOf(Reflect.ownKeys(views)).isRequired,
-  currentProject: Project,
-  selectedTask: Task,
-  onDataFetched: PropTypes.func,
+  fetchingStatus: PropTypes.oneOf(Reflect.ownKeys(fetchStatus)).isRequired,
+  dispatch: PropTypes.func,
 };
 const defaultProps = {
-  onDataFetched: Function.prototype,
-  currentProject: null,
-  selectedTask: null,
+  dispatch: Function.prototype,
 };
 
-const App = ({
-  projects,
-  tasks,
-  currentProject,
-  selectedTask,
-  view,
-  onDataFetched,
-}) => {
+const App = ({ projects, tasks, fetchingStatus, dispatch }) => {
   useEffect(() => {
-    const fetchProjects = async () => {
+    const fetchData = async () => {
+      dispatch(updateFetchStatus(fetchStatus.FETCHING));
       const result = await Projects.fetchData(500);
-      onDataFetched(result);
+      dispatch(fetchProjects(result.projects));
+      dispatch(fetchTasks(result.tasks));
+      dispatch(updateFetchStatus(fetchStatus.DONE));
     };
 
-    if (view === views.fetching) {
-      fetchProjects();
+    if (fetchingStatus === fetchStatus.UNSENT) {
+      fetchData();
     }
-  }, [view, onDataFetched]);
+  }, [fetchingStatus]);
 
-  if (view === views.fetching) {
+  if (fetchingStatus !== fetchStatus.DONE) {
     return (
       <Layout>
         <p>Fetching data...</p>
@@ -59,61 +53,74 @@ const App = ({
     );
   }
 
-  let content;
-  if (view === views.addTask) {
-    content = <FormTaskAdd />;
-  } else if (view === views.taskView) {
-    content = (
-      <TaskView
-        task={selectedTask}
-        onStatusChange={(task, status) => {
-          task.status = status;
-        }}
-      />
-    );
-  } else if (view === views.taskOverview) {
-    const filteredTasks = tasks.filter(
-      ({ projectId }) => projectId === currentProject.id
-    );
-    content = <TaskOverview tasks={filteredTasks} />;
-  } else if (view === views.addProject) {
-    content = <FormProjectAdd />;
-  } else if (view === views.projectsView) {
-    content = <ProjectView project={currentProject} />;
-  } else if (view === views.projectOverview) {
-    if (projects.length > 0) {
-      content = <ProjectOverview projects={projects} />;
-    } else {
-      content = <p>No projects found.</p>;
-    }
-  }
-
-  return <Layout>{content}</Layout>;
+  return (
+    <Layout>
+      <Switch>
+        <Route path="/tasks/add" component={FormTaskAdd} />
+        <Route
+          path="/projects/:projectId/tasks/:taskId"
+          render={({
+            match: {
+              params: { taskId },
+            },
+          }) => {
+            const task = tasks.find(t => t.id === taskId);
+            return <TaskView task={task} />;
+          }}
+        />
+        <Route path="/projects/add" component={FormProjectAdd} />
+        <Route
+          path="/projects/:id/tasks"
+          render={({
+            match: {
+              params: { id },
+            },
+            history,
+          }) => {
+            const filteredTasks = tasks.filter(t => t.projectId === id);
+            return (
+              <TaskOverview
+                tasks={filteredTasks}
+                onTaskSelect={task => {
+                  history.push(`/projects/${id}/tasks/${task.id}`);
+                }}
+              />
+            );
+          }}
+        />
+        <Route
+          path="/projects/:id"
+          render={({
+            match: {
+              params: { id },
+            },
+          }) => {
+            const project = projects.find(p => p.id === id);
+            return <ProjectView project={project} />;
+          }}
+        />
+        <Route
+          render={({ history }) => (
+            <ProjectOverview
+              projects={projects}
+              onProjectSelect={project => {
+                history.push(`/projects/${project.id}`);
+              }}
+            />
+          )}
+        />
+      </Switch>
+    </Layout>
+  );
 };
 
 App.propTypes = propTypes;
 App.defaultProps = defaultProps;
 
-const mapStateToProps = ({
+const mapStateToProps = ({ projects, tasks, fetchingStatus }) => ({
   projects,
   tasks,
-  selection: { project, task },
-  view,
-}) => ({
-  projects,
-  tasks,
-  currentProject: project,
-  selectedTask: task,
-  view,
-});
-const mapDispatchToProps = dispatch => ({
-  onDataFetched: ({ projects, tasks }) => {
-    dispatch(fetchProjects(projects));
-    dispatch(fetchTasks(tasks));
-  },
+  fetchingStatus,
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(App);
+export default connect(mapStateToProps)(App);

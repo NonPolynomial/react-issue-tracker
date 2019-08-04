@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import faker from 'faker';
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
 
 import { addProject } from '../store/actions';
 
-const FormProjectAdd = ({ dispatch }) => {
+const FormProjectAdd = ({ history, dispatch }) => {
   const [title, setTitle] = useState('');
   const [summary, setSummary] = useState('');
   const [description, setDescription] = useState('');
@@ -21,6 +22,7 @@ const FormProjectAdd = ({ dispatch }) => {
               id: faker.random.uuid(),
             })
           );
+          history.push('/');
         }
         e.preventDefault();
       }}
@@ -48,4 +50,4 @@ const FormProjectAdd = ({ dispatch }) => {
   );
 };
 
-export default connect()(FormProjectAdd);
+export default withRouter(connect()(FormProjectAdd));

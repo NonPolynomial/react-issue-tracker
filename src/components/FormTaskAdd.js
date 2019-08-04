@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import faker from 'faker';
 import { connect } from 'react-redux';
 
-import { addTask, selectProject } from '../store/actions';
+import { addTask } from '../store/actions';
 
-const FormTaskAdd = ({ dispatch, projects }) => {
+const FormTaskAdd = ({ history, dispatch, projects }) => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [status, setStatus] = useState('todo');
@@ -19,7 +19,6 @@ const FormTaskAdd = ({ dispatch, projects }) => {
           ['todo', 'progress', 'done'].includes(status) &&
           projects.map(({ id }) => id).includes(projectId)
         ) {
-          dispatch(selectProject(projects.find(({ id }) => id === projectId)));
           dispatch(
             addTask({
               title,
@@ -29,6 +28,7 @@ const FormTaskAdd = ({ dispatch, projects }) => {
               id: faker.random.uuid(),
             })
           );
+          history.push(`/projects/${projectId}`);
         }
         e.preventDefault();
       }}

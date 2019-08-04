@@ -1,64 +1,70 @@
 import React from 'react';
-import { connect } from 'react-redux';
-
-import { changeView, views } from '../../store/actions';
+import { Route, Link, withRouter } from 'react-router-dom';
 
 import './Layout.css';
 
-const Layout = ({ children, dispatch, view }) => {
-  let actions = [];
-
-  if (![views.addProject, views.addTask].includes(view)) {
-    actions.push(['Add Project', () => dispatch(changeView(views.addProject))]);
-    actions.push(['Add Task', () => dispatch(changeView(views.addTask))]);
-  }
-  if (view === views.projectsView) {
-    actions.push([
-      'Show Tasks assigned to this project',
-      () => dispatch(changeView(views.taskOverview)),
-    ]);
-    actions.push([
-      'Back to Projects',
-      () => dispatch(changeView(views.projectOverview)),
-    ]);
-  } else if (view === views.taskOverview) {
-    actions.push([
-      'Back to selected Project',
-      () => dispatch(changeView(views.projectsView)),
-    ]);
-  } else if (view === views.taskView) {
-    actions.push([
-      'Back to Tasks',
-      () => dispatch(changeView(views.taskOverview)),
-    ]);
-    actions.push([
-      'Back to selected Project',
-      () => dispatch(changeView(views.projectsView)),
-    ]);
-  }
+const Layout = ({ children, history }) => {
+  const actions = [];
+  actions.push(
+    <Route render={() => <Link to="/projects/add">Add Project</Link>} />
+  );
+  actions.push(<Route render={() => <Link to="/tasks/add">Add Task</Link>} />);
+  actions.push(
+    <Route
+      path="/projects/:projectId/tasks/:taskId"
+      render={({
+        match: {
+          params: { projectId },
+        },
+      }) => <Link to={`/projects/${projectId}/tasks`}>Back to tasks</Link>}
+    />
+  );
+  actions.push(
+    <Route
+      path="/projects/:id/tasks"
+      render={({
+        match: {
+          params: { id },
+        },
+      }) => <Link to={`/projects/${id}`}>Back to selected project</Link>}
+    />
+  );
+  actions.push(
+    <Route
+      exact
+      path="/projects/:id"
+      render={({
+        match: {
+          params: { id },
+        },
+      }) =>
+        id !== 'add' && <Link to={`/projects/${id}/tasks`}>View tasks</Link>
+      }
+    />
+  );
+  actions.push(
+    <Route
+      path="/projects"
+      render={() => <Link to="/">Back to projects</Link>}
+    />
+  );
 
   return (
     <div className="layout">
       <header>
         <h1
           style={{ cursor: 'pointer' }}
-          onClick={() => dispatch(changeView(views.projectOverview))}
+          onClick={() => {
+            history.push('/');
+          }}
         >
           Issue Tracker
         </h1>
-        <div className="actions">
-          {actions.map(([text, action]) => (
-            <button key={text} onClick={action}>
-              {text}
-            </button>
-          ))}
-        </div>
+        <div className="actions">{actions}</div>
       </header>
       {children}
     </div>
   );
 };
 
-const mapStateToProps = ({ view }) => ({ view });
-
-export default connect(mapStateToProps)(Layout);
+export default withRouter(Layout);

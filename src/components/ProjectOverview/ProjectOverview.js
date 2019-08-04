@@ -1,8 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-
-import { selectProject } from '../../store/actions';
 
 import { Project } from '../../types';
 
@@ -11,10 +8,12 @@ import './ProjectOverview.css';
 const propTypes = {
   projects: PropTypes.arrayOf(Project).isRequired,
   onProjectSelect: PropTypes.func,
+  dispatch: PropTypes.func,
 };
 
 const defaultProps = {
   onProjectSelect: Function.prototype,
+  dispatch: Function.prototype,
 };
 
 const ProjectOverview = ({ projects, onProjectSelect }) => (
@@ -25,7 +24,9 @@ const ProjectOverview = ({ projects, onProjectSelect }) => (
         <article
           key={project.id}
           className="project-overview__item"
-          onClick={() => onProjectSelect(project)}
+          onClick={() => {
+            onProjectSelect(project);
+          }}
         >
           <h3>{project.title}</h3>
           <p>{project.summary}</p>
@@ -38,11 +39,4 @@ const ProjectOverview = ({ projects, onProjectSelect }) => (
 ProjectOverview.propTypes = propTypes;
 ProjectOverview.defaultProps = defaultProps;
 
-const mapDispatchToProps = dispatch => ({
-  onProjectSelect: project => dispatch(selectProject(project)),
-});
-
-export default connect(
-  null,
-  mapDispatchToProps
-)(ProjectOverview);
+export default ProjectOverview;
