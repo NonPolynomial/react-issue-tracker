@@ -1,6 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 
+import useForceUpdate from '../hooks/useForceUpdate';
+import { selectTask } from '../store/actions';
 import { Task } from '../types';
 
 const propTypes = {
@@ -14,6 +17,8 @@ const defaultProps = {
 };
 
 const TaskView = ({ task, onStatusChange, onDeselect }) => {
+  const forceUpdate = useForceUpdate();
+
   return (
     <div>
       <button onClick={() => onDeselect()}>Back to task overview</button>
@@ -23,7 +28,11 @@ const TaskView = ({ task, onStatusChange, onDeselect }) => {
       <h4>Status</h4>
       <select
         value={task.status}
-        onChange={e => onStatusChange(task, e.target.selectedOptions[0].value)}
+        onChange={e => {
+          const status = e.target.selectedOptions[0].value;
+          onStatusChange(task, status);
+          forceUpdate();
+        }}
       >
         <option>todo</option>
         <option>progress</option>
@@ -36,4 +45,11 @@ const TaskView = ({ task, onStatusChange, onDeselect }) => {
 TaskView.propTypes = propTypes;
 TaskView.defaultProps = defaultProps;
 
-export default TaskView;
+const mapDispatchToProps = (dispatch, { task: self }) => ({
+  onDeselect: () => dispatch(selectTask(null)),
+});
+
+export default connect(
+  null,
+  mapDispatchToProps
+)(TaskView);

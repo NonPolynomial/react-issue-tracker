@@ -1,5 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+
+import { selectProject } from '../../store/actions';
 
 import { Project } from '../../types';
 
@@ -35,4 +38,11 @@ const ProjectOverview = ({ projects, onProjectSelect }) => (
 ProjectOverview.propTypes = propTypes;
 ProjectOverview.defaultProps = defaultProps;
 
-export default ProjectOverview;
+const mapDispatchToProps = dispatch => ({
+  onProjectSelect: project => dispatch(selectProject(project)),
+});
+
+export default connect(
+  null,
+  mapDispatchToProps
+)(ProjectOverview);
