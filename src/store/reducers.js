@@ -3,6 +3,8 @@ import { combineReducers } from 'redux';
 import {
   FETCH_PROJECTS,
   FETCH_TASKS,
+  ADD_PROJECT,
+  ADD_TASK,
   SELECT_PROJECT,
   SELECT_TASK,
   CHANGE_VIEW,
@@ -23,6 +25,8 @@ const projectsReducer = (state = initialState.projects, action) => {
   switch (action.type) {
     case FETCH_PROJECTS:
       return action.projects;
+    case ADD_PROJECT:
+      return [...state, action.project];
     default:
       return state;
   }
@@ -32,6 +36,8 @@ const tasksReducer = (state = initialState.tasks, action) => {
   switch (action.type) {
     case FETCH_TASKS:
       return action.tasks;
+    case ADD_TASK:
+      return [...state, action.task];
     default:
       return state;
   }
