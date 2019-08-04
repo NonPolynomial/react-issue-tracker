@@ -10,7 +10,7 @@ import ProjectView from './components/ProjectView';
 import TaskOverview from './components/TaskOverview';
 import TaskView from './components/TaskView';
 
-import { fetchProjects, views } from './store/actions';
+import { fetchProjects, fetchTasks, views } from './store/actions';
 
 import { Project, Task } from './types';
 
@@ -18,34 +18,36 @@ import './App.css';
 
 const propTypes = {
   projects: PropTypes.arrayOf(Project).isRequired,
+  tasks: PropTypes.arrayOf(Task).isRequired,
   view: PropTypes.oneOf(Reflect.ownKeys(views)).isRequired,
   currentProject: Project,
   selectedTask: Task,
-  onProjectsFetched: PropTypes.func,
+  onDataFetched: PropTypes.func,
 };
 const defaultProps = {
-  onProjectsFetched: Function.prototype,
+  onDataFetched: Function.prototype,
   currentProject: null,
   selectedTask: null,
 };
 
 const App = ({
   projects,
+  tasks,
   currentProject,
   selectedTask,
   view,
-  onProjectsFetched,
+  onDataFetched,
 }) => {
   useEffect(() => {
     const fetchProjects = async () => {
       const result = await Projects.fetchData(500);
-      onProjectsFetched(result);
+      onDataFetched(result);
     };
 
     if (view === views.fetching) {
       fetchProjects();
     }
-  }, [view, onProjectsFetched]);
+  }, [view, onDataFetched]);
 
   if (view === views.fetching) {
     return (
@@ -66,7 +68,10 @@ const App = ({
       />
     );
   } else if (view === views.taskOverview) {
-    content = <TaskOverview tasks={currentProject.tasks} />;
+    const filteredTasks = tasks.filter(
+      ({ projectId }) => projectId === currentProject.id
+    );
+    content = <TaskOverview tasks={filteredTasks} />;
   } else if (view === views.projectsView) {
     content = <ProjectView project={currentProject} />;
   } else if (view === views.projectOverview) {
@@ -83,14 +88,23 @@ const App = ({
 App.propTypes = propTypes;
 App.defaultProps = defaultProps;
 
-const mapStateToProps = ({ projects, selection: { project, task }, view }) => ({
+const mapStateToProps = ({
   projects,
+  tasks,
+  selection: { project, task },
+  view,
+}) => ({
+  projects,
+  tasks,
   currentProject: project,
   selectedTask: task,
   view,
 });
 const mapDispatchToProps = dispatch => ({
-  onProjectsFetched: projects => dispatch(fetchProjects(projects)),
+  onDataFetched: ({ projects, tasks }) => {
+    dispatch(fetchProjects(projects));
+    dispatch(fetchTasks(tasks));
+  },
 });
 
 export default connect(

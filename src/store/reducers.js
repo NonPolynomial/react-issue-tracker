@@ -2,6 +2,7 @@ import { combineReducers } from 'redux';
 
 import {
   FETCH_PROJECTS,
+  FETCH_TASKS,
   SELECT_PROJECT,
   SELECT_TASK,
   CHANGE_VIEW,
@@ -10,6 +11,7 @@ import {
 
 const initialState = {
   projects: [],
+  tasks: [],
   selection: {
     project: null,
     task: null,
@@ -21,6 +23,15 @@ const projectsReducer = (state = initialState.projects, action) => {
   switch (action.type) {
     case FETCH_PROJECTS:
       return action.projects;
+    default:
+      return state;
+  }
+};
+
+const tasksReducer = (state = initialState.tasks, action) => {
+  switch (action.type) {
+    case FETCH_TASKS:
+      return action.tasks;
     default:
       return state;
   }
@@ -60,6 +71,7 @@ const viewReducer = (state = initialState.view, action) => {
 
 export default combineReducers({
   projects: projectsReducer,
+  tasks: tasksReducer,
   selection: selectionReducer,
   view: viewReducer,
 });

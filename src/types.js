@@ -5,6 +5,8 @@ export const Task = PropTypes.shape({
   title: PropTypes.string.isRequired,
   description: PropTypes.string,
   status: PropTypes.oneOf(['todo', 'progress', 'done']).isRequired,
+  projectId: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+    .isRequired,
 });
 
 export const Project = PropTypes.shape({
@@ -12,5 +14,4 @@ export const Project = PropTypes.shape({
   title: PropTypes.string.isRequired,
   summary: PropTypes.string,
   description: PropTypes.string,
-  tasks: PropTypes.arrayOf(Task).isRequired,
 });
