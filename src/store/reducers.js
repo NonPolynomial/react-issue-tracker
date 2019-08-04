@@ -65,11 +65,14 @@ const viewReducer = (state = initialState.view, action) => {
     case CHANGE_VIEW:
       return action.view;
     case FETCH_PROJECTS:
+    case ADD_PROJECT:
       return views.projectOverview;
     case SELECT_PROJECT:
       return action.project ? views.projectsView : views.projectOverview;
     case SELECT_TASK:
       return action.task ? views.taskView : views.taskOverview;
+    case ADD_TASK:
+      return views.taskOverview;
     default:
       return state;
   }

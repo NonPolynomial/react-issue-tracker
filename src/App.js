@@ -7,6 +7,8 @@ import Projects from './services/Projects';
 import Layout from './components/Layout';
 import ProjectOverview from './components/ProjectOverview';
 import ProjectView from './components/ProjectView';
+import FormProjectAdd from './components/FormProjectAdd';
+import FormTaskAdd from './components/FormTaskAdd';
 import TaskOverview from './components/TaskOverview';
 import TaskView from './components/TaskView';
 
@@ -58,7 +60,9 @@ const App = ({
   }
 
   let content;
-  if (view === views.taskView) {
+  if (view === views.addTask) {
+    content = <FormTaskAdd />;
+  } else if (view === views.taskView) {
     content = (
       <TaskView
         task={selectedTask}
@@ -72,6 +76,8 @@ const App = ({
       ({ projectId }) => projectId === currentProject.id
     );
     content = <TaskOverview tasks={filteredTasks} />;
+  } else if (view === views.addProject) {
+    content = <FormProjectAdd />;
   } else if (view === views.projectsView) {
     content = <ProjectView project={currentProject} />;
   } else if (view === views.projectOverview) {

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
-import { changeView, selectTask, views } from '../../store/actions';
+import { selectTask } from '../../store/actions';
 
 import { Task } from '../../types';
 

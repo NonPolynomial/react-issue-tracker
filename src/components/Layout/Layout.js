@@ -48,7 +48,9 @@ const Layout = ({ children, dispatch, view }) => {
         </h1>
         <div className="actions">
           {actions.map(([text, action]) => (
-            <button onClick={action}>{text}</button>
+            <button key={text} onClick={action}>
+              {text}
+            </button>
           ))}
         </div>
       </header>
